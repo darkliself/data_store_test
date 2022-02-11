@@ -1,5 +1,7 @@
 package com.darkliself.datastoretest
 
+
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +17,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.datastore.core.DataStore
+import androidx.datastore.dataStoreFile
+import java.util.prefs.Preferences
+
 
 
 @Composable
@@ -32,7 +38,6 @@ fun MainScreen() {
                 .background(MaterialTheme.colors.onSurface.copy(alpha = 0.12f)),
         ) {
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text("Enter key")
                 BasicTextField(
@@ -48,7 +53,6 @@ fun MainScreen() {
                 .background(MaterialTheme.colors.onSurface.copy(alpha = 0.12f)),
         ) {
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text("Enter value")
 
@@ -64,8 +68,6 @@ fun MainScreen() {
             onClick = { /*TODO*/ }) {
             Text("SAVE")
         }
-
-
     }
 }
 
@@ -75,3 +77,11 @@ fun MainScreen() {
 private fun DefaultPreview() {
     MainScreen()
 }
+
+
+fun Data(context: Context) {
+
+
+}
+
+
