@@ -71,16 +71,13 @@ fun MainScreen() {
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 private fun DefaultPreview() {
     MainScreen()
 }
 
-
 fun Data(context: Context) {
-
 
 }
 
