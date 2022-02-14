@@ -11,22 +11,42 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.datastore.core.DataStore
-import androidx.datastore.dataStoreFile
-import java.util.prefs.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 
+val Context.dataStore2: DataStore<androidx.datastore.preferences.core.Preferences> by preferencesDataStore("" +
+        "test")
 
 @Composable
-fun MainScreen() {
+fun MainScreen(context: Context) {
+    val EXAMPLE_COUNTER = intPreferencesKey("example_counter")
+    val exampleCounterFlow: Flow<Int> = context.dataStore.data
+        .map { preferences ->
+            // No type safety.
+            preferences[EXAMPLE_COUNTER] ?: 0
+        }
+
+    suspend fun incrementCounter() {
+        context.dataStore.edit { settings ->
+            val currentCounterValue = settings[EXAMPLE_COUNTER] ?: 0
+            settings[EXAMPLE_COUNTER] = currentCounterValue + 1
+        }
+    }
+
+
     var key by remember { mutableStateOf("") }
     var value by remember { mutableStateOf("") }
+
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -47,6 +67,16 @@ fun MainScreen() {
                     })
             }
         }
+
+        Button(onClick = {
+            launch {
+
+            }
+            incrementCounter()
+        }) {
+            Text("To Do")
+        }
+
         Box(
             Modifier
                 .fillMaxWidth(0.8f)
@@ -74,11 +104,7 @@ fun MainScreen() {
 @Preview(showBackground = true)
 @Composable
 private fun DefaultPreview() {
-    MainScreen()
-}
-
-fun Data(context: Context) {
-
+    MainScreen(LocalContext.current)
 }
 
 
