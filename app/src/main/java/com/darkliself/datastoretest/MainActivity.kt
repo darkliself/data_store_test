@@ -18,7 +18,9 @@ import kotlinx.coroutines.flow.map
 import java.io.File
 
 
-val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+//val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+
+
 
 
 
@@ -28,7 +30,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MainScreen(LocalContext.current, null)
+            MainScreen(LocalContext.current)
         }
     }
 }
@@ -42,5 +44,5 @@ fun Greeting(name: String) {
 @Composable
 private fun DefaultPreview() {
 
-    MainScreen(LocalContext.current, null)
+    MainScreen(LocalContext.current)
 }

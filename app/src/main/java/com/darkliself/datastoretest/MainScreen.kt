@@ -17,31 +17,37 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-
-
-val Context.dataStore2: DataStore<androidx.datastore.preferences.core.Preferences> by preferencesDataStore("" +
-        "test")
+import kotlinx.coroutines.launch
 
 @Composable
 fun MainScreen(context: Context) {
-    val EXAMPLE_COUNTER = intPreferencesKey("example_counter")
-    val exampleCounterFlow: Flow<Int> = context.dataStore.data
-        .map { preferences ->
-            // No type safety.
-            preferences[EXAMPLE_COUNTER] ?: 0
+    val EXAMPLE_COUNTER = stringPreferencesKey("lolwhat")
+
+    val t = NicknamePreferenceRepo()
+
+    class MyViewModel : ViewModel() {
+        init {
+            viewModelScope.launch {
+                // Coroutine that will be canceled when the ViewModel is cleared.
+                t.write(context, "lolwhat")
+                println(t.showFullData(context, EXAMPLE_COUNTER))
+            }
         }
 
-    suspend fun incrementCounter() {
-        context.dataStore.edit { settings ->
-            val currentCounterValue = settings[EXAMPLE_COUNTER] ?: 0
-            settings[EXAMPLE_COUNTER] = currentCounterValue + 1
+        fun All() {
         }
     }
+
+    val z = MyViewModel()
 
 
     var key by remember { mutableStateOf("") }
@@ -69,10 +75,7 @@ fun MainScreen(context: Context) {
         }
 
         Button(onClick = {
-            launch {
 
-            }
-            incrementCounter()
         }) {
             Text("To Do")
         }
