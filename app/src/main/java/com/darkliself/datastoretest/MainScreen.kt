@@ -16,39 +16,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import androidx.lifecycle.*
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.darkliself.datastoretest.repository.NicknameRepository
+import com.darkliself.datastoretest.viewmodel.NicknameViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
+
+
 @Composable
-fun MainScreen(context: Context) {
+fun MainScreen(context: Context,
+//    viewModel: NicknameViewModel = viewModel(
+//        factory = DataStoreViewModelFactory(NicknameRepository(LocalContext.current))
+//    )
+) {
     val EXAMPLE_COUNTER = stringPreferencesKey("lolwhat")
 
-    val t = NicknamePreferenceRepo()
-
-    class MyViewModel : ViewModel() {
-        init {
-            viewModelScope.launch {
-                // Coroutine that will be canceled when the ViewModel is cleared.
-                t.write(context, "lolwhat")
-                println(t.showFullData(context, EXAMPLE_COUNTER))
-            }
-        }
-
-        fun All() {
-        }
-    }
-
-    val z = MyViewModel()
-
+    val zz = NicknameViewModel(NicknameRepository(context))
+    val scope = rememberCoroutineScope()
 
     var key by remember { mutableStateOf("") }
     var value by remember { mutableStateOf("") }
@@ -75,6 +62,12 @@ fun MainScreen(context: Context) {
         }
 
         Button(onClick = {
+            scope.async {
+                println("dsdsf")
+            }
+            scope.launch {
+                zz.read("lolwhat")
+            }
 
         }) {
             Text("To Do")
@@ -98,7 +91,11 @@ fun MainScreen(context: Context) {
         }
 
         Button(
-            onClick = { /*TODO*/ }) {
+            onClick = {
+                scope.launch {
+                    zz.printAll()
+                }
+            }) {
             Text("SAVE")
         }
     }
@@ -110,4 +107,13 @@ private fun DefaultPreview() {
     MainScreen(LocalContext.current)
 }
 
+class DataStoreViewModelFactory(private val dataStorePreferenceRepository: NicknameRepository) :
+    ViewModelProvider.Factory {
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(NicknameViewModel::class.java)) {
+            return NicknameViewModel(dataStorePreferenceRepository) as T
+        }
+        throw IllegalStateException()
+    }
+}
 
