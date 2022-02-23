@@ -24,8 +24,6 @@ class NicknameViewModel(
         }
     }
 
-
-
     suspend fun read(key: String) {
             println(repo.getNickname(key))
     }
@@ -33,6 +31,7 @@ class NicknameViewModel(
     suspend fun write(value: String) {
         repo.writeData(value)
     }
+
     suspend fun remove(key: String) {
         repo.removeNickname(key)
     }
